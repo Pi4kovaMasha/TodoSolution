@@ -31,5 +31,26 @@ namespace Todo.Core.Tests
             Assert.Single(found);
             Assert.Equal("Buy milk", found[0].Title);
         }
+
+        [Fact]
+        public void SaveAndLoad_Works()
+        {
+            var list = new TodoList();
+            list.Add("Task 1");
+            list.Add("Task 2");
+
+            var path = "tasks.json";
+            list.Save(path);
+
+            var newList = new TodoList();
+            newList.Load(path);
+
+            Assert.Equal(2, newList.Count);
+            Assert.Equal("Task 1", newList.Items[0].Title);
+            Assert.Equal("Task 2", newList.Items[1].Title);
+
+            if (File.Exists(path)) File.Delete(path);
+        }
+
     }
 }
