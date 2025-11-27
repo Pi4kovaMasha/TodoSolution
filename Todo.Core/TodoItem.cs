@@ -1,26 +1,33 @@
-﻿namespace Todo.Core
+﻿using System.Text.Json.Serialization;
+
+public class TodoItem
 {
-    public class TodoItem
+    [JsonInclude]
+    public Guid Id { get; private set; }
+
+    [JsonInclude]
+    public string Title { get; private set; }
+
+    [JsonInclude]
+    public bool IsDone { get; private set; }
+
+    // ВАЖНО! Пустой конструктор для JSON
+    public TodoItem() { }
+
+    public TodoItem(string title)
     {
-        public Guid Id { get; private set; }
-        public string Title { get; private set; }
-        public bool IsDone { get; private set; }
+        Id = Guid.NewGuid();
+        Title = title?.Trim() ?? throw new ArgumentNullException(nameof(title));
+    }
 
-        public TodoItem() { }
+    public void MarkDone() => IsDone = true;
+    public void MarkUndone() => IsDone = false;
 
-        public TodoItem(string title)
-        {
-            Title = title?.Trim() ?? throw new ArgumentNullException(nameof(title));
-            Id = Guid.NewGuid();
-        }
+    public void Rename(string newTitle)
+    {
+        if (string.IsNullOrWhiteSpace(newTitle))
+            throw new ArgumentException("Title required", nameof(newTitle));
 
-        public void MarkDone() => IsDone = true;
-        public void MarkUndone() => IsDone = false;
-
-        public void Rename(string newTitle)
-        {
-            if (string.IsNullOrWhiteSpace(newTitle)) throw new ArgumentException("Title required", nameof(newTitle));
-            Title = newTitle.Trim();
-        }
+        Title = newTitle.Trim();
     }
 }
